@@ -23,6 +23,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -72,7 +73,7 @@ public class Graficos extends JFrame {
 		inicializarComponentes();
 
 		try {
-			setIconImage(ImageIO.read(this.getClass().getResource("resources/Cubo-EnfocadoL.png")));
+			setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("resources/Cubo-EnfocadoL.png"))));
 		} catch (IOException e) {
 			System.out.println("La imagen no se encuentra");
 		}
