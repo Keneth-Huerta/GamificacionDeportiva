@@ -3,7 +3,6 @@ package gamificaciondeportiva;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
@@ -748,7 +747,7 @@ public class Graficos extends JFrame {
         panelLogros.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panelLogros.setBackground(new Color(245, 245, 250));
 
-        String[] columnas = {"Nombre", "Descripción", "Puntos", "Estado", "Progreso"};
+        String[] columnas = {"Nombre", "Descripción", "Puntos", "Estado"};
         modeloTablaLogros = new DefaultTableModel(columnas, 0) {
             private static final long serialVersionUID = 1L;
 
@@ -776,7 +775,7 @@ public class Graficos extends JFrame {
         habilitarToolTipsTabla(tablaLogros);
         tablaLogros.setRowHeight(30);
 
-        // Configuración de renderizador para la columna de progreso
+       /* // Configuración de renderizador para la columna de progreso
         tablaLogros.getColumnModel().getColumn(4).setCellRenderer(new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -790,7 +789,7 @@ public class Graficos extends JFrame {
                 }
                 return null;
             }
-        });
+        });*/
 
         tablaLogros.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         tablaLogros.getTableHeader().setBackground(new Color(70, 130, 180));
