@@ -9,21 +9,24 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
-import java.util.Objects;
 
 public class GraficosAdmin extends JFrame {
-    @Serial
     private static final long serialVersionUID = 4438379178856699935L;
+    private SistemaGamificacion sistema;
+    private Usuario usuarioActual;
     private DefaultTableModel modeloTablaCompetencias;
+    private JDateChooser dateChooserInicio;
+    private JDateChooser dateChooserFin;
     private DefaultTableModel modeloTablaLogros, modeloTablaDesafios;
 
     public GraficosAdmin(SistemaGamificacion sistema, Usuario usuarioActual) {
+        this.sistema = sistema;
+        this.usuarioActual = usuarioActual;
 
         configurarVentana();
         inicializarComponentes();
@@ -42,11 +45,11 @@ public class GraficosAdmin extends JFrame {
     }
 
     private void inicializarSelectorFechas() {
-        JDateChooser dateChooserInicio = new JDateChooser();
+        dateChooserInicio = new JDateChooser();
         dateChooserInicio.setDateFormatString("yyyy-MM-dd");
         dateChooserInicio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        JDateChooser dateChooserFin = new JDateChooser();
+        dateChooserFin = new JDateChooser();
         dateChooserFin.setDateFormatString("yyyy-MM-dd");
         dateChooserFin.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     }
@@ -69,7 +72,7 @@ public class GraficosAdmin extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         try {
-            setIconImage(ImageIO.read(Objects.requireNonNull(this.getClass().getResource("resources/Cubo-EnfocadoL.png"))));
+            setIconImage(ImageIO.read(this.getClass().getResource("resources/Cubo-EnfocadoL.png")));
         } catch (IOException e) {
             System.out.println("La imagen no se encuentra");
         }
@@ -199,8 +202,8 @@ public class GraficosAdmin extends JFrame {
                 String descripcion = txtDescripcion.getText();
                 int puntos = Integer.parseInt(txtPuntos.getText());
                 String estado = cmbEstado.getSelectedItem().toString();
-                java.util.Date fechaInicio = dateChooserInicio.getDate();
-                java.util.Date fechaFin = dateChooserFin.getDate();
+                Date fechaInicio = dateChooserInicio.getDate();
+                Date fechaFin = dateChooserFin.getDate();
 
                 if (nombre.isEmpty() || descripcion.isEmpty() || fechaInicio == null || fechaFin == null) {
                     JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Advertencia",

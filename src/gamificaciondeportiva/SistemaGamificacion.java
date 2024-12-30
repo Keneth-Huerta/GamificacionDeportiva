@@ -257,8 +257,8 @@ public class SistemaGamificacion {
                 insertStmt.setString(1, "D001");
                 insertStmt.setString(2, "Reto de distancia");
                 insertStmt.setString(3, "Correr 5 km en un día.");
-                insertStmt.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
-                insertStmt.setDate(5, java.sql.Date.valueOf(java.time.LocalDate.now().plusDays(7)));
+                insertStmt.setDate(4, java.sql.Date.valueOf(LocalDate.now()));
+                insertStmt.setDate(5, java.sql.Date.valueOf(LocalDate.now().plusDays(7)));
                 insertStmt.setInt(6, 200);
                 insertStmt.setString(7, "ACTIVO");
                 insertStmt.executeUpdate();
@@ -267,8 +267,8 @@ public class SistemaGamificacion {
                 insertStmt.setString(1, "D002");
                 insertStmt.setString(2, "Entrenamiento constante");
                 insertStmt.setString(3, "Realizar actividad física 3 días consecutivos.");
-                insertStmt.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
-                insertStmt.setDate(5, java.sql.Date.valueOf(java.time.LocalDate.now().plusDays(7)));
+                insertStmt.setDate(4, java.sql.Date.valueOf(LocalDate.now()));
+                insertStmt.setDate(5, java.sql.Date.valueOf(LocalDate.now().plusDays(7)));
                 insertStmt.setInt(6, 300);
                 insertStmt.setString(7, "ACTIVO");
                 insertStmt.executeUpdate();
@@ -424,7 +424,7 @@ public class SistemaGamificacion {
                     PreparedStatement stmtInsert = conn.prepareStatement(insertQuery);
                     stmtInsert.setString(1, usuario.getId());
                     stmtInsert.setString(2, logro.getId());
-                    stmtInsert.setDate(3, java.sql.Date.valueOf(java.time.LocalDate.now()));
+                    stmtInsert.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
                     stmtInsert.executeUpdate();
 
                     System.out.println("Logro completado: " + logro.getNombre());
@@ -467,8 +467,8 @@ public class SistemaGamificacion {
             PreparedStatement insertParticipacionStmt = conn.prepareStatement(insertParticipacionQuery);
             insertParticipacionStmt.setString(1, competencia.getId());
             insertParticipacionStmt.setString(2, usuario.getId());
-            insertParticipacionStmt.setDate(3, java.sql.Date.valueOf(java.time.LocalDate.now()));
-            insertParticipacionStmt.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now().plusDays(10))); // Ejemplo
+            insertParticipacionStmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+            insertParticipacionStmt.setDate(4, java.sql.Date.valueOf(LocalDate.now().plusDays(10))); // Ejemplo
             insertParticipacionStmt.setString(5, "EN_PROGRESO");
             insertParticipacionStmt.executeUpdate();
 
@@ -569,8 +569,8 @@ public class SistemaGamificacion {
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, competencia.getId());
             stmt.setString(2, usuario.getId());
-            stmt.setDate(3, java.sql.Date.valueOf(java.time.LocalDate.now()));
-            stmt.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now().plusDays(10))); // Ejemplo
+            stmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+            stmt.setDate(4, java.sql.Date.valueOf(LocalDate.now().plusDays(10))); // Ejemplo
             stmt.setString(5, "REGISTRO"); // Estado inicial
             stmt.executeUpdate();
 

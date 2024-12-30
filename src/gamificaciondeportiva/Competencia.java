@@ -1,12 +1,12 @@
 package gamificaciondeportiva;
 
+import gamificaciondeportiva.ActividadDeportiva.TipoDeporte;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import gamificaciondeportiva.ActividadDeportiva.TipoDeporte;
 
 // Sistema de gestión de competencias
 public class Competencia {
@@ -17,10 +17,6 @@ public class Competencia {
     private LocalDate fechaFin;
     private Map<Usuario, Integer> participantesYPuntos;
     private EstadoCompetencia estado;
-
-    public enum EstadoCompetencia {
-        REGISTRO, EN_PROGRESO, FINALIZADA
-    }
 
     public Competencia(String id, String nombre, TipoDeporte tipoDeporte, LocalDate fechaInicio, LocalDate fechaFin) {
         this.id = id;
@@ -125,5 +121,9 @@ public class Competencia {
 
     public void setEstado(EstadoCompetencia estado) {
         this.estado = estado;
+    }
+
+    public enum EstadoCompetencia {
+        REGISTRO, EN_PROGRESO, FINALIZADA
     }
 }

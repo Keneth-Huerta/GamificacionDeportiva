@@ -1,10 +1,8 @@
 package gamificaciondeportiva;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,20 +12,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 public class PantallaInicio extends JFrame {
     private static final long serialVersionUID = -6409051712070186098L;
@@ -45,6 +29,20 @@ public class PantallaInicio extends JFrame {
             System.out.println("La image no se encuentra");
         }
         mostrarInicioSesion();
+    }
+
+    public static String cifrarContrasena(String contrasena) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest(contrasena.getBytes());
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 
     private void cambiarPanel(JPanel nuevoPanel) {
@@ -209,20 +207,6 @@ public class PantallaInicio extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al crear la cuenta: " + ex.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static String cifrarContrasena(String contrasena) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hash = md.digest(contrasena.getBytes());
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
     }
 
     private void iniciarSesion() {

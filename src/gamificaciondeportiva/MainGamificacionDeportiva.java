@@ -1,5 +1,6 @@
 package gamificaciondeportiva;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,9 +8,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 public class MainGamificacionDeportiva {
 
@@ -27,7 +25,8 @@ public class MainGamificacionDeportiva {
                             Configuracion.setUsuarioActual(usuario);
 
                             SistemaGamificacion sistema = new SistemaGamificacion();
-                            try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER, Configuracion.DB_PASSWORD)) {
+                            try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL,
+                                    Configuracion.DB_USER, Configuracion.DB_PASSWORD)) {
                                 CargaDatos.cargarDatosRelacionados(conn, sistema, usuario);
                             }
 
@@ -70,7 +69,7 @@ public class MainGamificacionDeportiva {
             String id = reader.readLine();
             String tipo = reader.readLine();
 
-            Usuario usuario = cargarUsuarioDesdeBaseDeDatos(id); // Metodo para obtener datos del usuario
+            Usuario usuario = cargarUsuarioDesdeBaseDeDatos(id); // Método para obtener datos del usuario
             if (usuario != null) {
                 usuario.setEsAdmin("admin".equalsIgnoreCase(tipo)); // Define si es administrador
             }
@@ -82,7 +81,8 @@ public class MainGamificacionDeportiva {
     }
 
     private static Usuario cargarUsuarioDesdeBaseDeDatos(String id) {
-        try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER, Configuracion.DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
+                Configuracion.DB_PASSWORD)) {
             String query = "SELECT * FROM Usuarios WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, id);

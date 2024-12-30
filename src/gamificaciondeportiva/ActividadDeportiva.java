@@ -14,13 +14,10 @@ class ActividadDeportiva {
     private int caloriasQuemadas;
     private Usuario usuario;
 
-    private final boolean esCompetencia;
+    private boolean esCompetencia;
 
-    public enum TipoDeporte {
-        CORRER, NATACION, CICLISMO, FUTBOL, BALONCESTO, VOLLEYBALL, GIMNASIO
-    }
-
-    public ActividadDeportiva(String id, TipoDeporte tipo, int duracionMinutos, double distanciaKm, Usuario usuario, boolean esCompetencia) {
+    public ActividadDeportiva(String id, TipoDeporte tipo, int duracionMinutos, double distanciaKm, Usuario usuario,
+                              boolean esCompetencia) {
         this.id = id;
         this.tipo = tipo;
         this.fecha = LocalDate.now();
@@ -46,12 +43,12 @@ class ActividadDeportiva {
         return id;
     }
 
-    public boolean esCompetencia() {
-        return esCompetencia;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean esCompetencia() {
+        return esCompetencia;
     }
 
     public TipoDeporte getTipo() {
@@ -108,5 +105,9 @@ class ActividadDeportiva {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public enum TipoDeporte {
+        CORRER, NATACION, CICLISMO, FUTBOL, BALONCESTO, VOLLEYBALL, GIMNASIO
     }
 }

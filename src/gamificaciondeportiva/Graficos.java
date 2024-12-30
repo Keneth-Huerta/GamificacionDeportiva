@@ -11,20 +11,18 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Objects;
 
 public class Graficos extends JFrame {
-    @Serial
     private static final long serialVersionUID = 2208912880386379928L;
-    private final SistemaGamificacion sistema;
-    private final Usuario usuarioActual;
+    private SistemaGamificacion sistema;
+    private Usuario usuarioActual;
     private DefaultTableModel modeloTablaLogros, modeloTablaActividades, modeloTablaDesafios, modeloTablaCompetencias;
+    private JTabbedPane tabbedPane;
     private JPanel panelPerfil;
     private JPanel panelActividades;
     private JPanel panelLogros;
@@ -44,7 +42,7 @@ public class Graficos extends JFrame {
         inicializarComponentes();
 
         try {
-            setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("resources/Cubo-EnfocadoL.png"))));
+            setIconImage(ImageIO.read(this.getClass().getResource("resources/Cubo-EnfocadoL.png")));
         } catch (IOException e) {
             System.out.println("La imagen no se encuentra");
         }
@@ -154,7 +152,7 @@ public class Graficos extends JFrame {
     }
 
     private void inicializarComponentes() {
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         estilizarTabbedPane(tabbedPane);
 
         inicializarPanelPerfil();
@@ -204,6 +202,7 @@ public class Graficos extends JFrame {
 
         String[] columnas = {"Nombre", "Descripción", "Estado"};
         modeloTablaDesafios = new DefaultTableModel(columnas, 0) {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -250,7 +249,7 @@ public class Graficos extends JFrame {
 
     private ImageIcon cargarImagenPredeterminada() {
         try {
-            BufferedImage defaultImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("resources/default-profile.png")));
+            BufferedImage defaultImage = ImageIO.read(getClass().getResource("resources/default-profile.png"));
             defaultImage = escalarImagen(defaultImage, 150, 150); // Escalar antes de convertir
             return hacerImagenCircular(defaultImage, 150); // Convertir en circular
         } catch (Exception ex) {
@@ -306,7 +305,7 @@ public class Graficos extends JFrame {
 
         try {
             if (usuarioActual.getFotoPerfil() != null) {
-                ImageIcon iconoCircular = hacerImagenCircular(usuarioActual.getFotoPerfil());
+                ImageIcon iconoCircular = hacerImagenCircular(usuarioActual.getFotoPerfil(), 150);
                 lblFotoPerfil.setIcon(iconoCircular);
             } else {
                 lblFotoPerfil.setIcon(cargarImagenPredeterminada());
@@ -383,14 +382,14 @@ public class Graficos extends JFrame {
         return boton;
     }
 
-    private ImageIcon hacerImagenCircular(byte[] imagenBytes) {
+    private ImageIcon hacerImagenCircular(byte[] imagenBytes, int diameter) {
         try {
             BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(imagenBytes));
-            BufferedImage circularImage = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage circularImage = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D g2 = circularImage.createGraphics();
-            g2.setClip(new Ellipse2D.Float(0, 0, 150, 150));
-            g2.drawImage(originalImage, 0, 0, 150, 150, null);
+            g2.setClip(new Ellipse2D.Float(0, 0, diameter, diameter));
+            g2.drawImage(originalImage, 0, 0, diameter, diameter, null);
             g2.dispose();
 
             return new ImageIcon(circularImage);
@@ -499,7 +498,7 @@ public class Graficos extends JFrame {
         tabla.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             @Override
             public void mouseMoved(java.awt.event.MouseEvent e) {
-                java.awt.Point p = e.getPoint();
+                Point p = e.getPoint();
                 int row = tabla.rowAtPoint(p);
                 int column = tabla.columnAtPoint(p);
                 if (row != -1 && column != -1) {
@@ -568,6 +567,7 @@ public class Graficos extends JFrame {
 
         String[] columnas = {"ID (Oculto)", "Nombre", "Deporte", "Estado"};
         modeloTablaCompetencias = new DefaultTableModel(columnas, 0) {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -748,7 +748,7 @@ public class Graficos extends JFrame {
         panelLogros.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panelLogros.setBackground(new Color(245, 245, 250));
 
-        String[] columnas = {"Nombre", "Descripción", "Puntos", "Estado"};
+        String[] columnas = {"Nombre", "Descripción", "Puntos", "Estado", "Progreso"};
         modeloTablaLogros = new DefaultTableModel(columnas, 0) {
             private static final long serialVersionUID = 1L;
 
@@ -759,10 +759,11 @@ public class Graficos extends JFrame {
         };
 
         JTable tablaLogros = new JTable(modeloTablaLogros) {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public String getToolTipText(java.awt.event.MouseEvent e) {
-                java.awt.Point p = e.getPoint();
+                Point p = e.getPoint();
                 int row = rowAtPoint(p);
                 int column = columnAtPoint(p);
                 if (row != -1 && column != -1) {
@@ -787,7 +788,7 @@ public class Graficos extends JFrame {
                     progressBar.setForeground(new Color(70, 130, 180));
                     return progressBar;
                 }
-                return new JLabel(value != null ? value.toString() : "");
+                return null;
             }
         });
 
