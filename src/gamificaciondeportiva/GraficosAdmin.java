@@ -1,12 +1,15 @@
 package gamificaciondeportiva;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import com.toedter.calendar.JDateChooser;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,39 +17,13 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.Objects;
 
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.table.DefaultTableModel;
-
-import com.toedter.calendar.JDateChooser;
-
 public class GraficosAdmin extends JFrame {
+    @Serial
     private static final long serialVersionUID = 4438379178856699935L;
-    private SistemaGamificacion sistema;
-    private Usuario usuarioActual;
     private DefaultTableModel modeloTablaCompetencias;
-    private JDateChooser dateChooserInicio;
-    private JDateChooser dateChooserFin;
     private DefaultTableModel modeloTablaLogros, modeloTablaDesafios;
 
     public GraficosAdmin(SistemaGamificacion sistema, Usuario usuarioActual) {
-        this.sistema = sistema;
-        this.usuarioActual = usuarioActual;
 
         configurarVentana();
         inicializarComponentes();
@@ -65,11 +42,11 @@ public class GraficosAdmin extends JFrame {
     }
 
     private void inicializarSelectorFechas() {
-        dateChooserInicio = new JDateChooser();
+        JDateChooser dateChooserInicio = new JDateChooser();
         dateChooserInicio.setDateFormatString("yyyy-MM-dd");
         dateChooserInicio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        dateChooserFin = new JDateChooser();
+        JDateChooser dateChooserFin = new JDateChooser();
         dateChooserFin.setDateFormatString("yyyy-MM-dd");
         dateChooserFin.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     }
