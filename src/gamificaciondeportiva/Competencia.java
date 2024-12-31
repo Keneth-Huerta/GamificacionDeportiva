@@ -8,7 +8,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Sistema de gestión de competencias
+/**
+ * La clase Competencia representa una competencia deportiva con participantes y puntuaciones.
+ * Permite registrar participantes, actualizar sus puntuaciones, iniciar y finalizar la competencia,
+ * y anunciar los ganadores.
+ *
+ * <p>Esta clase incluye métodos para:</p>
+ * <ul>
+ *   <li>Registrar participantes en la competencia</li>
+ *   <li>Actualizar la puntuación de los participantes</li>
+ *   <li>Iniciar y finalizar la competencia</li>
+ *   <li>Anunciar los ganadores de la competencia</li>
+ * </ul>
+ *
+ * <p>Constructor de la clase:</p>
+ *
+ * @param id          Identificador de la competencia.
+ * @param nombre      Nombre de la competencia.
+ * @param tipoDeporte Tipo de deporte de la competencia.
+ * @param fechaInicio Fecha de inicio de la competencia.
+ * @param fechaFin    Fecha de fin de la competencia.
+ */
 public class Competencia {
     private String id;
     private String nombre;
@@ -18,6 +38,15 @@ public class Competencia {
     private Map<Usuario, Integer> participantesYPuntos;
     private EstadoCompetencia estado;
 
+    /**
+     * Constructor para crear una nueva competencia.
+     *
+     * @param id          Identificador de la competencia.
+     * @param nombre      Nombre de la competencia.
+     * @param tipoDeporte Tipo de deporte de la competencia.
+     * @param fechaInicio Fecha de inicio de la competencia.
+     * @param fechaFin    Fecha de fin de la competencia.
+     */
     public Competencia(String id, String nombre, TipoDeporte tipoDeporte, LocalDate fechaInicio, LocalDate fechaFin) {
         this.id = id;
         this.nombre = nombre;
@@ -28,6 +57,11 @@ public class Competencia {
         this.estado = EstadoCompetencia.REGISTRO;
     }
 
+    /**
+     * Registra un participante en la competencia.
+     *
+     * @param usuario Usuario a registrar.
+     */
     public void registrarParticipante(Usuario usuario) {
         if (estado == EstadoCompetencia.REGISTRO) {
             participantesYPuntos.put(usuario, 0);
@@ -35,12 +69,21 @@ public class Competencia {
         }
     }
 
+    /**
+     * Actualiza la puntuación de un participante.
+     *
+     * @param usuario Usuario cuya puntuación se va a actualizar.
+     * @param puntos  Puntos a añadir.
+     */
     public void actualizarPuntuacion(Usuario usuario, int puntos) {
         if (estado == EstadoCompetencia.EN_PROGRESO) {
             participantesYPuntos.put(usuario, participantesYPuntos.getOrDefault(usuario, 0) + puntos);
         }
     }
 
+    /**
+     * Inicia la competencia.
+     */
     public void iniciarCompetencia() {
         if (estado == EstadoCompetencia.REGISTRO && LocalDate.now().isEqual(fechaInicio)) {
             estado = EstadoCompetencia.EN_PROGRESO;
@@ -48,6 +91,9 @@ public class Competencia {
         }
     }
 
+    /**
+     * Finaliza la competencia.
+     */
     public void finalizarCompetencia() {
         if (estado == EstadoCompetencia.EN_PROGRESO) {
             estado = EstadoCompetencia.FINALIZADA;
@@ -55,6 +101,9 @@ public class Competencia {
         }
     }
 
+    /**
+     * Anuncia los ganadores de la competencia.
+     */
     private void anunciarGanadores() {
         List<Map.Entry<Usuario, Integer>> ranking = new ArrayList<>(participantesYPuntos.entrySet());
         ranking.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
@@ -67,62 +116,136 @@ public class Competencia {
     }
 
     // Métodos Getters y Setters
+
+    /**
+     * Obtiene el identificador de la competencia.
+     *
+     * @return Identificador de la competencia.
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Establece el identificador de la competencia.
+     *
+     * @param id Identificador de la competencia.
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Obtiene el nombre de la competencia.
+     *
+     * @return Nombre de la competencia.
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Establece el nombre de la competencia.
+     *
+     * @param nombre Nombre de la competencia.
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene el tipo de deporte de la competencia.
+     *
+     * @return Tipo de deporte de la competencia.
+     */
     public TipoDeporte getTipoDeporte() {
         return tipoDeporte;
     }
 
+    /**
+     * Establece el tipo de deporte de la competencia.
+     *
+     * @param tipoDeporte Tipo de deporte de la competencia.
+     */
     public void setTipoDeporte(TipoDeporte tipoDeporte) {
         this.tipoDeporte = tipoDeporte;
     }
 
+    /**
+     * Obtiene la fecha de inicio de la competencia.
+     *
+     * @return Fecha de inicio de la competencia.
+     */
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
+    /**
+     * Establece la fecha de inicio de la competencia.
+     *
+     * @param fechaInicio Fecha de inicio de la competencia.
+     */
     public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
+    /**
+     * Obtiene la fecha de fin de la competencia.
+     *
+     * @return Fecha de fin de la competencia.
+     */
     public LocalDate getFechaFin() {
         return fechaFin;
     }
 
+    /**
+     * Establece la fecha de fin de la competencia.
+     *
+     * @param fechaFin Fecha de fin de la competencia.
+     */
     public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
     }
 
+    /**
+     * Obtiene el mapa de participantes y sus puntos.
+     *
+     * @return Mapa de participantes y sus puntos.
+     */
     public Map<Usuario, Integer> getParticipantesYPuntos() {
         return participantesYPuntos;
     }
 
+    /**
+     * Establece el mapa de participantes y sus puntos.
+     *
+     * @param participantesYPuntos Mapa de participantes y sus puntos.
+     */
     public void setParticipantesYPuntos(Map<Usuario, Integer> participantesYPuntos) {
         this.participantesYPuntos = participantesYPuntos;
     }
 
+    /**
+     * Obtiene el estado de la competencia.
+     *
+     * @return Estado de la competencia.
+     */
     public EstadoCompetencia getEstado() {
         return estado;
     }
 
+    /**
+     * Establece el estado de la competencia.
+     *
+     * @param estado Estado de la competencia.
+     */
     public void setEstado(EstadoCompetencia estado) {
         this.estado = estado;
     }
 
+    /**
+     * Enum para los estados de la competencia.
+     */
     public enum EstadoCompetencia {
         REGISTRO, EN_PROGRESO, FINALIZADA
     }

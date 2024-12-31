@@ -11,6 +11,11 @@ import java.sql.ResultSet;
 
 public class MainGamificacionDeportiva {
 
+    /**
+     * Método principal que inicia la aplicación de gamificación deportiva.
+     *
+     * @param args Argumentos de la línea de comandos.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             PantallaCarga pantallaCarga = new PantallaCarga(null, "Cargando datos...");
@@ -58,6 +63,11 @@ public class MainGamificacionDeportiva {
         });
     }
 
+    /**
+     * Carga la sesión del usuario desde un archivo.
+     *
+     * @return El usuario cargado desde el archivo, o null si no se encuentra.
+     */
     private static Usuario cargarSesionDesdeArchivo() {
         File sesionFile = new File("sesion.txt");
         if (!sesionFile.exists()) {
@@ -80,6 +90,12 @@ public class MainGamificacionDeportiva {
         }
     }
 
+    /**
+     * Carga un usuario desde la base de datos utilizando su ID.
+     *
+     * @param id El ID del usuario a cargar.
+     * @return El usuario cargado desde la base de datos, o null si no se encuentra.
+     */
     private static Usuario cargarUsuarioDesdeBaseDeDatos(String id) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {

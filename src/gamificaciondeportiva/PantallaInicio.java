@@ -13,11 +13,49 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * PantallaInicio es un JFrame que representa la pantalla inicial de la aplicación.
+ * Proporciona funcionalidades para el inicio de sesión del usuario y la creación de cuentas.
+ *
+ * <p>Esta clase incluye métodos para:
+ * <ul>
+ * <li>Mostrar la pantalla de inicio de sesión</li>
+ * <li>Mostrar la pantalla de creación de cuentas</li>
+ * <li>Encriptar contraseñas usando SHA-256</li>
+ * <li>Manejar el inicio de sesión del usuario y la creación de cuentas</li>
+ * </ul>
+ *
+ * <p>También incluye métodos auxiliares para estilizar componentes y cambiar paneles.
+ *
+ * <p>Ejemplo de uso:
+ * <pre>
+ * {@code
+ * PantallaInicio pantallaInicio = new PantallaInicio();
+ * pantallaInicio.setVisible(true);
+ * }
+ * </pre>
+ *
+ * <p>Nota: Esta clase requiere una conexión a la base de datos para manejar los datos del usuario.
+ *
+ * @see javax.swing.JFrame
+ * @see javax.swing.JPanel
+ * @see javax.swing.JTextField
+ * @see javax.swing.JPasswordField
+ * @see java.security.MessageDigest
+ * @see java.sql.Connection
+ * @see java.sql.DriverManager
+ * @see java.sql.PreparedStatement
+ * @see java.sql.ResultSet
+ */
 public class PantallaInicio extends JFrame {
     private static final long serialVersionUID = -6409051712070186098L;
     private JTextField txtUsuario;
     private JPasswordField txtContrasena;
 
+    /**
+     * Constructor de PantallaInicio.
+     * Configura la ventana principal y muestra la pantalla de inicio de sesión.
+     */
     public PantallaInicio() {
         setTitle("Gamificación Deportiva");
         setSize(500, 400);
@@ -26,11 +64,18 @@ public class PantallaInicio extends JFrame {
         try {
             setIconImage(ImageIO.read(this.getClass().getResource("resources/Cubo-EnfocadoL.png")));
         } catch (IOException e) {
-            System.out.println("La image no se encuentra");
+            System.out.println("La imagen no se encuentra");
         }
         mostrarInicioSesion();
     }
 
+    /**
+     * Cifra una contraseña utilizando el algoritmo SHA-256.
+     *
+     * @param contrasena La contraseña a cifrar.
+     * @return La contraseña cifrada en formato hexadecimal.
+     * @throws NoSuchAlgorithmException Si el algoritmo SHA-256 no está disponible.
+     */
     public static String cifrarContrasena(String contrasena) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(contrasena.getBytes());
@@ -45,12 +90,20 @@ public class PantallaInicio extends JFrame {
         return hexString.toString();
     }
 
+    /**
+     * Cambia el panel actual por un nuevo panel.
+     *
+     * @param nuevoPanel El nuevo panel a mostrar.
+     */
     private void cambiarPanel(JPanel nuevoPanel) {
         setContentPane(nuevoPanel);
         pack();
         setLocationRelativeTo(null); // Mantener ventana centrada
     }
 
+    /**
+     * Muestra la pantalla de inicio de sesión.
+     */
     private void mostrarInicioSesion() {
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
@@ -102,6 +155,9 @@ public class PantallaInicio extends JFrame {
         cambiarPanel(panelPrincipal);
     }
 
+    /**
+     * Muestra la pantalla de creación de cuentas.
+     */
     private void mostrarCrearCuenta() {
         JPanel panelCrearCuenta = new JPanel();
         panelCrearCuenta.setLayout(new BoxLayout(panelCrearCuenta, BoxLayout.Y_AXIS));
@@ -147,11 +203,23 @@ public class PantallaInicio extends JFrame {
         cambiarPanel(panelCrearCuenta);
     }
 
+    /**
+     * Estiliza una etiqueta JLabel.
+     *
+     * @param etiqueta La etiqueta a estilizar.
+     */
     private void estilizarEtiqueta(JLabel etiqueta) {
         etiqueta.setFont(new Font("Segoe UI", Font.BOLD, 14));
         etiqueta.setForeground(new Color(50, 50, 50)); // Gris oscuro para contraste
     }
 
+    /**
+     * Crea un botón con el texto y la acción especificados.
+     *
+     * @param texto  El texto del botón.
+     * @param accion La acción a realizar cuando se presiona el botón.
+     * @return El botón creado.
+     */
     private JButton crearBoton(String texto, ActionListener accion) {
         JButton boton = new JButton(texto);
         boton.setBackground(new Color(70, 130, 180));
@@ -163,6 +231,13 @@ public class PantallaInicio extends JFrame {
         return boton;
     }
 
+    /**
+     * Crea una nueva cuenta de usuario.
+     *
+     * @param txtNuevoUsuario    Campo de texto para el nombre de usuario.
+     * @param txtNuevaContrasena Campo de texto para la contraseña.
+     * @param txtNombre          Campo de texto para el nombre.
+     */
     private void crearCuenta(JTextField txtNuevoUsuario, JPasswordField txtNuevaContrasena, JTextField txtNombre) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -209,6 +284,9 @@ public class PantallaInicio extends JFrame {
         }
     }
 
+    /**
+     * Inicia sesión con el usuario y la contraseña proporcionados.
+     */
     private void iniciarSesion() {
         JFrame ventanaPadre = this;
         PantallaCarga pantallaCarga = new PantallaCarga(ventanaPadre, "Iniciando sesión...");
@@ -292,13 +370,22 @@ public class PantallaInicio extends JFrame {
         worker.execute();
     }
 
+    /**
+     * Estiliza un campo de texto JTextField.
+     *
+     * @param campo El campo de texto a estilizar.
+     */
     private void estilizarCampoTexto(JTextField campo) {
         campo.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         campo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     }
 
-    // Guardar la sesión en un archivo
+    /**
+     * Guarda la sesión del usuario en un archivo.
+     *
+     * @param usuario El usuario cuya sesión se va a guardar.
+     */
     private void guardarSesion(Usuario usuario) {
         try (FileWriter writer = new FileWriter("sesion.txt")) {
             writer.write(usuario.getId() + "\n");
@@ -308,6 +395,4 @@ public class PantallaInicio extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al guardar la sesión.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-
 }

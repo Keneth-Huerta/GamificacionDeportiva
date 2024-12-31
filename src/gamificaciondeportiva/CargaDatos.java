@@ -5,17 +5,28 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+
+/**
+ * La clase CargaDatos proporciona métodos estáticos para cargar datos relacionados con un usuario
+ * en un sistema de gamificación desde una base de datos.
+ */
 public class CargaDatos {
 
-    public static void cargarDatosRelacionados(Connection conn, SistemaGamificacion sistema, Usuario usuario)
-            throws Exception {
+    /**
+     * Carga los datos relacionados de un usuario en el sistema de gamificación.
+     *
+     * @param conn    Conexión a la base de datos.
+     * @param sistema Sistema de gamificación.
+     * @param usuario Usuario cuyos datos se van a cargar.
+     * @throws Exception Si ocurre un error durante la carga de datos.
+     */
+    public static void cargarDatosRelacionados(Connection conn, SistemaGamificacion sistema, Usuario usuario) throws Exception {
         cargarLogros(conn, sistema, usuario);
         cargarDesafios(conn, sistema, usuario);
         cargarCompetencias(conn, sistema, usuario); // Pasa el usuario como parámetro
         cargarActividades(conn, sistema, usuario);
         // Al cargar los datos del usuario desde la base de datos
-        try (Connection conn1 = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
-                Configuracion.DB_PASSWORD)) {
+        try (Connection conn1 = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER, Configuracion.DB_PASSWORD)) {
 
             String query = "SELECT fotoPerfil FROM Usuarios WHERE id = ?";
             PreparedStatement stmt = conn1.prepareStatement(query);
@@ -31,18 +42,22 @@ public class CargaDatos {
 
     }
 
+    /**
+     * Carga los logros de un usuario en el sistema de gamificación.
+     *
+     * @param conn    Conexión a la base de datos.
+     * @param sistema Sistema de gamificación.
+     * @param usuario Usuario cuyos logros se van a cargar.
+     * @throws Exception Si ocurre un error durante la carga de logros.
+     */
     public static void cargarLogros(Connection conn, SistemaGamificacion sistema, Usuario usuario) throws Exception {
-        String logrosQuery = "SELECT l.*, "
-                + "CASE WHEN lc.usuarioId IS NOT NULL THEN TRUE ELSE FALSE END AS completado, "
-                + "lc.fechaCumplimiento " + "FROM Logros l "
-                + "LEFT JOIN LogrosCompletados lc ON l.id = lc.logroId AND lc.usuarioId = ?";
+        String logrosQuery = "SELECT l.*, " + "CASE WHEN lc.usuarioId IS NOT NULL THEN TRUE ELSE FALSE END AS completado, " + "lc.fechaCumplimiento " + "FROM Logros l " + "LEFT JOIN LogrosCompletados lc ON l.id = lc.logroId AND lc.usuarioId = ?";
         PreparedStatement stmt = conn.prepareStatement(logrosQuery);
         stmt.setString(1, usuario.getId());
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            Logro logro = new Logro(rs.getString("id"), rs.getString("nombre"), rs.getString("descripcion"),
-                    rs.getInt("puntosRecompensa"), Logro.TipoLogro.valueOf(rs.getString("tipo")));
+            Logro logro = new Logro(rs.getString("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getInt("puntosRecompensa"), Logro.TipoLogro.valueOf(rs.getString("tipo")));
             if (rs.getBoolean("completado")) {
                 logro.setCompletado(true);
                 logro.setFechaCumplimiento(rs.getDate("fechaCumplimiento").toLocalDate());
@@ -51,9 +66,16 @@ public class CargaDatos {
         }
     }
 
+    /**
+     * Carga los desafíos de un usuario en el sistema de gamificación.
+     *
+     * @param conn    Conexión a la base de datos.
+     * @param sistema Sistema de gamificación.
+     * @param usuario Usuario cuyos desafíos se van a cargar.
+     * @throws Exception Si ocurre un error durante la carga de desafíos.
+     */
     public static void cargarDesafios(Connection conn, SistemaGamificacion sistema, Usuario usuario) throws Exception {
-        String query = "SELECT d.*, " + "CASE WHEN dc.usuarioId IS NOT NULL THEN TRUE ELSE FALSE END AS completado "
-                + "FROM Desafios d " + "LEFT JOIN DesafiosCompletados dc ON d.id = dc.desafioId AND dc.usuarioId = ?";
+        String query = "SELECT d.*, " + "CASE WHEN dc.usuarioId IS NOT NULL THEN TRUE ELSE FALSE END AS completado " + "FROM Desafios d " + "LEFT JOIN DesafiosCompletados dc ON d.id = dc.desafioId AND dc.usuarioId = ?";
         PreparedStatement stmt = conn.prepareStatement(query);
         stmt.setString(1, usuario.getId());
         ResultSet rs = stmt.executeQuery();
@@ -77,29 +99,38 @@ public class CargaDatos {
         }
     }
 
-    public static void cargarActividades(Connection conn, SistemaGamificacion sistema, Usuario usuario)
-            throws Exception {
+    /**
+     * Carga las actividades deportivas de un usuario en el sistema de gamificación.
+     *
+     * @param conn    Conexión a la base de datos.
+     * @param sistema Sistema de gamificación.
+     * @param usuario Usuario cuyas actividades se van a cargar.
+     * @throws Exception Si ocurre un error durante la carga de actividades.
+     */
+    public static void cargarActividades(Connection conn, SistemaGamificacion sistema, Usuario usuario) throws Exception {
         String actividadesQuery = "SELECT * FROM Actividades WHERE usuarioId = ?";
         PreparedStatement stmt = conn.prepareStatement(actividadesQuery);
         stmt.setString(1, usuario.getId());
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            ActividadDeportiva actividad = new ActividadDeportiva(rs.getString("id"),
-                    ActividadDeportiva.TipoDeporte.valueOf(rs.getString("tipo")), rs.getInt("duracionMinutos"),
-                    rs.getDouble("distanciaKm"), usuario, false);
+            ActividadDeportiva actividad = new ActividadDeportiva(rs.getString("id"), ActividadDeportiva.TipoDeporte.valueOf(rs.getString("tipo")), rs.getInt("duracionMinutos"), rs.getDouble("distanciaKm"), usuario, false);
             actividad.setFecha(rs.getDate("fecha").toLocalDate());
             actividad.setHora(rs.getTime("hora").toLocalTime());
-            sistema.getUsuarios().stream().filter(u -> u.getId().equals(usuario.getId())).findFirst()
-                    .ifPresent(u -> u.agregarDesafio(null)); // Agrega lógica adicional si es necesario
+            sistema.getUsuarios().stream().filter(u -> u.getId().equals(usuario.getId())).findFirst().ifPresent(u -> u.agregarDesafio(null)); // Agrega lógica adicional si es necesario
         }
     }
 
-    public static void cargarCompetencias(Connection conn, SistemaGamificacion sistema, Usuario usuario)
-            throws Exception {
-        String query = "SELECT c.id, c.nombre, c.tipoDeporte, " + "cp.fechaInicio, cp.fechaFin, cp.estado "
-                + "FROM Competencias c "
-                + "LEFT JOIN CompetenciasParticipacion cp ON c.id = cp.competenciaId AND cp.usuarioId = ?";
+    /**
+     * Carga las competencias de un usuario en el sistema de gamificación.
+     *
+     * @param conn    Conexión a la base de datos.
+     * @param sistema Sistema de gamificación.
+     * @param usuario Usuario cuyas competencias se van a cargar.
+     * @throws Exception Si ocurre un error durante la carga de competencias.
+     */
+    public static void cargarCompetencias(Connection conn, SistemaGamificacion sistema, Usuario usuario) throws Exception {
+        String query = "SELECT c.id, c.nombre, c.tipoDeporte, " + "cp.fechaInicio, cp.fechaFin, cp.estado " + "FROM Competencias c " + "LEFT JOIN CompetenciasParticipacion cp ON c.id = cp.competenciaId AND cp.usuarioId = ?";
         PreparedStatement stmt = conn.prepareStatement(query);
         stmt.setString(1, usuario.getId());
         ResultSet rs = stmt.executeQuery();
@@ -112,9 +143,7 @@ public class CargaDatos {
                     // inicio
                     rs.getDate("fechaFin") != null ? rs.getDate("fechaFin").toLocalDate() : null // Fecha de fin
             );
-            competencia.setEstado(
-                    rs.getString("estado") != null ? Competencia.EstadoCompetencia.valueOf(rs.getString("estado"))
-                            : Competencia.EstadoCompetencia.REGISTRO); // Estado por defecto
+            competencia.setEstado(rs.getString("estado") != null ? Competencia.EstadoCompetencia.valueOf(rs.getString("estado")) : Competencia.EstadoCompetencia.REGISTRO); // Estado por defecto
             sistema.getCompetencias().add(competencia);
         }
     }

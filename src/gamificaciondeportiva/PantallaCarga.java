@@ -5,11 +5,66 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * PantallaCarga es un JDialog personalizado que muestra una pantalla de carga con una barra de progreso y un mensaje.
+ * Se utiliza para indicar que un proceso está en curso y el usuario debe esperar.
+ *
+ * <p>Esta clase extiende JDialog e incluye un JProgressBar y un JLabel para mostrar un ícono y un mensaje.</p>
+ *
+ * <p>Ejemplo de uso:</p>
+ * <pre>
+ * {@code
+ * PantallaCarga pantallaCarga = new PantallaCarga(parentFrame, "Cargando, por favor espere...");
+ * pantallaCarga.mostrar();
+ * // Realizar alguna tarea que dure mucho tiempo
+ * pantallaCarga.ocultar();
+ * }
+ * </pre>
+ *
+ * <p>Detalles del constructor:</p>
+ *
+ * @param padre   El JFrame principal de este diálogo.
+ * @param mensaje El mensaje que se mostrará en la pantalla de carga.
+ *
+ *                <p>Métodos:</p>
+ *                <ul>
+ *                  <li>{@link #mostrar()} - Muestra la pantalla de carga.</li>
+ *                  <li>{@link #ocultar()} - Oculta la pantalla de carga.</li>
+ *                </ul>
+ *
+ *                <p>Nota:</p>
+ *                <ul>
+ *                  <li>Se espera que el ícono de carga se encuentre en "resources/carga.gif".</li>
+ *                  <li>Se espera que el ícono de la ventana se encuentre en "resources/Cubo-EnfocadoL.png".</li>
+ *                </ul>
+ *
+ *                <p>Ejemplo de cómo configurar la imagen del ícono:</p>
+ *                <pre>
+ *                {@code
+ *                try {
+ *                    setIconImage(ImageIO.read(this.getClass().getResource("resources/Cubo-EnfocadoL.png")));
+ *                } catch (IOException e) {
+ *                    System.out.println("La imagen no se encuentra");
+ *                }
+ *                }
+ *                </pre>
+ * @see javax.swing.JDialog
+ * @see javax.swing.JProgressBar
+ * @see javax.swing.JLabel
+ */
+
 public class PantallaCarga extends JDialog {
     private static final long serialVersionUID = -2140236403018123465L;
     private JProgressBar barraProgreso;
     private JLabel lblIcono;
 
+    /**
+     * Constructor de PantallaCarga.
+     * Configura la ventana de diálogo y sus componentes.
+     *
+     * @param padre   El JFrame principal de este diálogo.
+     * @param mensaje El mensaje que se mostrará en la pantalla de carga.
+     */
     public PantallaCarga(JFrame padre, String mensaje) {
         super(padre, true);
         setTitle("Cargando...");
@@ -53,10 +108,16 @@ public class PantallaCarga extends JDialog {
         setLocationRelativeTo(padre);
     }
 
+    /**
+     * Muestra la pantalla de carga.
+     */
     public void mostrar() {
         SwingUtilities.invokeLater(() -> setVisible(true));
     }
 
+    /**
+     * Oculta la pantalla de carga.
+     */
     public void ocultar() {
         SwingUtilities.invokeLater(() -> setVisible(false));
     }

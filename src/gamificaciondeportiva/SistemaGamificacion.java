@@ -14,6 +14,23 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La clase SistemaGamificacion gestiona los componentes centrales del sistema de gamificación deportiva,
+ * incluyendo usuarios, logros, desafíos y competiciones.
+ * <p>
+ * Esta clase proporciona funcionalidades para:
+ * <ul>
+ *     <li>Registrar logros completados por los usuarios y actualizarlos en la base de datos.</li>
+ *     <li>Obtener el estado de las competiciones en las que un usuario participa.</li>
+ *     <li>Gestionar la información de los usuarios, como su foto de perfil y actualizarla en la base de datos.</li>
+ *     <li>Registrar actividades deportivas realizadas por los usuarios, así como verificar y actualizar sus logros y desafíos.</li>
+ *     <li>Gestionar competencias activas y las puntuaciones asociadas.</li>
+ * </ul>
+ * <p>
+ * Además, la clase soporta la creación de competiciones y desafíos predeterminados, y la actualización de las
+ * puntuaciones de los usuarios en los mismos. También incluye mecanismos para mantener el sistema actualizado mediante
+ * la notificación de cambios a través de callbacks (Runnable).
+ */
 public class SistemaGamificacion {
     private List<Usuario> usuarios;
     private List<Logro> logrosDisponibles;
@@ -22,6 +39,10 @@ public class SistemaGamificacion {
 
     private Runnable onLogrosActualizados;
 
+    /**
+     * Constructor de la clase SistemaGamificacion.
+     * Inicializa las listas de usuarios, logros, desafíos y competencias.
+     */
     public SistemaGamificacion() {
         usuarios = new ArrayList<>();
         logrosDisponibles = new ArrayList<>();
@@ -32,6 +53,12 @@ public class SistemaGamificacion {
         inicializarDesafios();
     }
 
+    /**
+     * Registra un logro completado por un usuario en la base de datos.
+     *
+     * @param logro   El logro completado.
+     * @param usuario El usuario que completó el logro.
+     */
     public void registrarLogroCompletado(Logro logro, Usuario usuario) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -51,6 +78,13 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Obtiene el estado de una competencia para un usuario específico.
+     *
+     * @param competenciaId El ID de la competencia.
+     * @param usuarioId     El ID del usuario.
+     * @return El estado de la competencia o null si no se encuentra.
+     */
     public String obtenerEstadoCompetencia(String competenciaId, String usuarioId) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -70,6 +104,12 @@ public class SistemaGamificacion {
         return null; // Retorna null si no encuentra el estado
     }
 
+    /**
+     * Obtiene la foto de perfil de un usuario desde la base de datos.
+     *
+     * @param usuarioId El ID del usuario.
+     * @return Un ImageIcon con la foto de perfil o null si no se encuentra.
+     */
     public ImageIcon obtenerFotoDesdeBaseDeDatos(String usuarioId) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -91,6 +131,11 @@ public class SistemaGamificacion {
         return null; // Retorna null si no hay imagen o ocurre un error
     }
 
+    /**
+     * Carga una imagen predeterminada para el perfil.
+     *
+     * @return Un ImageIcon con la imagen predeterminada.
+     */
     private ImageIcon cargarImagenPredeterminada() {
         try {
             ImageIcon iconoDefault = new ImageIcon(this.getClass().getResource("resources/default-profile.png"));
@@ -104,6 +149,13 @@ public class SistemaGamificacion {
         return new ImageIcon(new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB));
     }
 
+    /**
+     * Convierte una imagen en un BufferedImage circular.
+     *
+     * @param image    La imagen a convertir.
+     * @param diameter El diámetro del círculo.
+     * @return Un BufferedImage circular.
+     */
     public BufferedImage hacerImagenCircular(Image image, int diameter) {
         BufferedImage output = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = output.createGraphics();
@@ -115,6 +167,12 @@ public class SistemaGamificacion {
         return output;
     }
 
+    /**
+     * Convierte un ImageIcon en un ImageIcon circular.
+     *
+     * @param icono El ImageIcon a convertir.
+     * @return Un ImageIcon circular.
+     */
     public ImageIcon hacerImagenCircular(ImageIcon icono) {
         BufferedImage originalImage = new BufferedImage(icono.getIconWidth(), icono.getIconHeight(),
                 BufferedImage.TYPE_INT_ARGB);
@@ -133,6 +191,11 @@ public class SistemaGamificacion {
         return new ImageIcon(circularImage);
     }
 
+    /**
+     * Actualiza la información de un usuario en la base de datos.
+     *
+     * @param usuario El usuario a actualizar.
+     */
     public void actualizarUsuario(Usuario usuario) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -147,6 +210,12 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Obtiene la competencia relacionada con un usuario.
+     *
+     * @param usuarioId El ID del usuario.
+     * @return El ID de la competencia o null si no se encuentra.
+     */
     public String obtenerCompetenciaRelacionada(String usuarioId) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -164,6 +233,11 @@ public class SistemaGamificacion {
         return null; // No hay competencias activas para el usuario
     }
 
+    /**
+     * Registra una actividad deportiva en la base de datos.
+     *
+     * @param actividad La actividad deportiva a registrar.
+     */
     public void registrarActividad(ActividadDeportiva actividad) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -187,34 +261,63 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Obtiene la lista de usuarios.
+     *
+     * @return La lista de usuarios.
+     */
     public List<Usuario> getUsuarios() {
         return usuarios;
     }
 
+    /**
+     * Obtiene la lista de logros disponibles.
+     *
+     * @return La lista de logros disponibles.
+     */
     public List<Logro> getLogrosDisponibles() {
         return logrosDisponibles;
     }
 
+    /**
+     * Obtiene la lista de desafíos activos.
+     *
+     * @return La lista de desafíos activos.
+     */
     public List<Desafio> getDesafiosActivos() {
         return desafiosActivos;
     }
 
+    /**
+     * Obtiene la lista de competencias.
+     *
+     * @return La lista de competencias.
+     */
     public List<Competencia> getCompetencias() {
         return competencias;
     }
 
+    /**
+     * Establece un Runnable que se ejecutará cuando los logros sean actualizados.
+     *
+     * @param onLogrosActualizados El Runnable a ejecutar.
+     */
     public void setOnLogrosActualizados(Runnable onLogrosActualizados) {
         this.onLogrosActualizados = onLogrosActualizados;
     }
 
+    /**
+     * Notifica que los logros han sido actualizados.
+     */
     private void notificarLogrosActualizados() {
         if (onLogrosActualizados != null) {
             onLogrosActualizados.run();
         }
     }
 
-    // Métodos para inicializar desafíos y competencias (opcional, si necesitas
-    // crear datos por defecto)
+    /**
+     * Inicializa los logros en la base de datos.
+     */
     private void inicializarLogros() {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -239,6 +342,9 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Inicializa los desafíos en la base de datos.
+     */
     public void inicializarDesafios() {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -278,6 +384,12 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Registra un desafío completado por un usuario en la base de datos.
+     *
+     * @param desafio El desafío completado.
+     * @param usuario El usuario que completó el desafío.
+     */
     public void registrarDesafioCompletado(Desafio desafio, Usuario usuario) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -296,6 +408,12 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Calcula los puntos obtenidos por una actividad deportiva.
+     *
+     * @param actividad La actividad deportiva.
+     * @return Los puntos obtenidos.
+     */
     public int calcularPuntos(ActividadDeportiva actividad) {
         int puntos = 0;
 
@@ -308,6 +426,13 @@ public class SistemaGamificacion {
         return puntos;
     }
 
+    /**
+     * Registra una actividad en una competencia.
+     *
+     * @param competenciaId El ID de la competencia.
+     * @param usuario       El usuario que realizó la actividad.
+     * @param actividad     La actividad realizada.
+     */
     public void registrarActividadEnCompetencia(String competenciaId, Usuario usuario, ActividadDeportiva actividad) {
         int puntos = calcularPuntos(actividad);
 
@@ -318,6 +443,13 @@ public class SistemaGamificacion {
                 "Actividad registrada en la competencia: " + actividad.getTipo() + ". Puntos obtenidos: " + puntos);
     }
 
+    /**
+     * Actualiza la puntuación de un usuario en una competencia.
+     *
+     * @param competenciaId El ID de la competencia.
+     * @param usuario       El usuario cuya puntuación se actualizará.
+     * @param puntos        Los puntos a añadir.
+     */
     public void actualizarPuntuacion(String competenciaId, Usuario usuario, int puntos) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -337,6 +469,11 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Marca una competencia como finalizada.
+     *
+     * @param competenciaId El ID de la competencia.
+     */
     public void finalizarCompetencia(String competenciaId) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -352,6 +489,13 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Obtiene la competencia relacionada con un usuario y un tipo de deporte específico.
+     *
+     * @param usuarioId El ID del usuario.
+     * @param tipo      El tipo de deporte.
+     * @return El ID de la competencia relacionada o null si no se encuentra.
+     */
     public String obtenerCompetenciaRelacionada(String usuarioId, ActividadDeportiva.TipoDeporte tipo) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -373,6 +517,11 @@ public class SistemaGamificacion {
         return null;
     }
 
+    /**
+     * Verifica y actualiza los desafíos completados por un usuario.
+     *
+     * @param usuario El usuario a verificar y actualizar.
+     */
     public void verificarYActualizarDesafios(Usuario usuario) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -397,6 +546,11 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Verifica y actualiza los logros completados por un usuario.
+     *
+     * @param usuario El usuario a verificar y actualizar.
+     */
     public void verificarYActualizarLogros(Usuario usuario) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -435,6 +589,12 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Registra a un usuario en una competencia.
+     *
+     * @param competencia La competencia en la que se registrará el usuario.
+     * @param usuario     El usuario que se registrará en la competencia.
+     */
     public void registrarEnCompetencia(Competencia competencia, Usuario usuario) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -488,6 +648,13 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Actualiza la puntuación de un usuario en una competencia.
+     *
+     * @param competenciaId El ID de la competencia.
+     * @param usuarioId     El ID del usuario.
+     * @param puntos        Los puntos a añadir.
+     */
     public void actualizarPuntuacion(String competenciaId, String usuarioId, int puntos) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -506,6 +673,12 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Consulta el ranking de usuarios en una competencia.
+     *
+     * @param competenciaId El ID de la competencia.
+     * @return La lista de usuarios ordenada por puntuación.
+     */
     public List<Usuario> consultarRanking(String competenciaId) {
         List<Usuario> ranking = new ArrayList<>();
 
@@ -531,6 +704,12 @@ public class SistemaGamificacion {
         return ranking;
     }
 
+    /**
+     * Anuncia el ganador de una competencia.
+     *
+     * @param competenciaId El ID de la competencia.
+     * @return El usuario ganador o null si no se encuentra.
+     */
     public Usuario anunciarGanador(String competenciaId) {
         Usuario ganador = null;
 
@@ -560,6 +739,12 @@ public class SistemaGamificacion {
         return ganador;
     }
 
+    /**
+     * Registra la participación de un usuario en una competencia.
+     *
+     * @param competencia La competencia en la que se registrará el usuario.
+     * @param usuario     El usuario que se registrará en la competencia.
+     */
     public void registrarParticipacionCompetencia(Competencia competencia, Usuario usuario) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -580,6 +765,9 @@ public class SistemaGamificacion {
         }
     }
 
+    /**
+     * Inicializa las competencias en la base de datos.
+     */
     public void inicializarCompetencias() {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -607,5 +795,4 @@ public class SistemaGamificacion {
             ex.printStackTrace();
         }
     }
-
 }

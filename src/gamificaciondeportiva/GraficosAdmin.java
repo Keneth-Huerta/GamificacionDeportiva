@@ -15,6 +15,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
 
+/**
+ * Clase para la administración de competencias, logros y desafíos en la aplicación de gamificación deportiva.
+ *
+ * <p>Esta clase proporciona métodos para gestionar competencias, logros y desafíos, incluyendo su visualización y edición
+ * en la interfaz de administración.</p>
+ *
+ * <p>Incluye funcionalidades para:</p>
+ * <ul>
+ *   <li>Agregar, editar y eliminar competencias, logros y desafíos.</li>
+ *   <li>Gestionar las fechas de inicio y fin de competencias y desafíos.</li>
+ *   <li>Mostrar mensajes personalizados en la interfaz.</li>
+ *   <li>Controlar la sesión del administrador y manejar la ventana de la aplicación.</li>
+ * </ul>
+ *
+ * <p>Constructor de la clase:</p>
+ *
+ * @param sistema       El sistema de gamificación.
+ * @param usuarioActual El usuario actual (administrador).
+ */
 public class GraficosAdmin extends JFrame {
     private static final long serialVersionUID = 4438379178856699935L;
     private SistemaGamificacion sistema;
@@ -24,6 +43,12 @@ public class GraficosAdmin extends JFrame {
     private JDateChooser dateChooserFin;
     private DefaultTableModel modeloTablaLogros, modeloTablaDesafios;
 
+    /**
+     * Constructor de la clase GraficosAdmin.
+     *
+     * @param sistema       El sistema de gamificación.
+     * @param usuarioActual El usuario actual.
+     */
     public GraficosAdmin(SistemaGamificacion sistema, Usuario usuarioActual) {
         this.sistema = sistema;
         this.usuarioActual = usuarioActual;
@@ -32,6 +57,13 @@ public class GraficosAdmin extends JFrame {
         inicializarComponentes();
     }
 
+    /**
+     * Muestra un diálogo personalizado con un mensaje.
+     *
+     * @param mensaje El mensaje a mostrar.
+     * @param titulo  El título del diálogo.
+     * @param tipo    El tipo de mensaje (información, advertencia, error, etc.).
+     */
     private void mostrarDialogoPersonalizado(String mensaje, String titulo, int tipo) {
         JLabel lblMensaje = new JLabel(mensaje);
         lblMensaje.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -44,6 +76,9 @@ public class GraficosAdmin extends JFrame {
         JOptionPane.showMessageDialog(this, panel, titulo, tipo);
     }
 
+    /**
+     * Inicializa los selectores de fechas.
+     */
     private void inicializarSelectorFechas() {
         dateChooserInicio = new JDateChooser();
         dateChooserInicio.setDateFormatString("yyyy-MM-dd");
@@ -54,6 +89,9 @@ public class GraficosAdmin extends JFrame {
         dateChooserFin.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     }
 
+    /**
+     * Cierra la sesión del usuario actual.
+     */
     private void cerrarSesion() {
         // Elimina el archivo de sesión
         File sesionFile = new File("sesion.txt");
@@ -66,6 +104,9 @@ public class GraficosAdmin extends JFrame {
         dispose(); // Cierra la ventana actual
     }
 
+    /**
+     * Configura la ventana principal de la interfaz de administración.
+     */
     private void configurarVentana() {
         setTitle("Administración de Competencias");
         setSize(900, 600);
@@ -78,6 +119,9 @@ public class GraficosAdmin extends JFrame {
         }
     }
 
+    /**
+     * Inicializa los componentes de la interfaz de usuario.
+     */
     private void inicializarComponentes() {
         JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -96,6 +140,11 @@ public class GraficosAdmin extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Inicializa el panel de desafíos.
+     *
+     * @return El panel de desafíos.
+     */
     private JPanel inicializarPanelDesafios() {
         JPanel panelDesafios = new JPanel(new BorderLayout(10, 10));
         panelDesafios.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -129,6 +178,11 @@ public class GraficosAdmin extends JFrame {
         return panelDesafios;
     }
 
+    /**
+     * Carga los logros desde la base de datos y los muestra en la tabla.
+     *
+     * @param modeloTabla El modelo de la tabla donde se mostrarán los logros.
+     */
     private void cargarLogrosDesdeBaseDeDatos(DefaultTableModel modeloTabla) {
         modeloTabla.setRowCount(0); // Limpia la tabla
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
@@ -147,6 +201,9 @@ public class GraficosAdmin extends JFrame {
         }
     }
 
+    /**
+     * Abre un diálogo para agregar un nuevo desafío.
+     */
     private void agregarDesafio() {
         JDialog dialog = new JDialog(this, "Agregar Desafío", true);
         dialog.setSize(400, 350);
@@ -244,6 +301,11 @@ public class GraficosAdmin extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Abre un diálogo para editar un desafío seleccionado.
+     *
+     * @param tablaDesafios La tabla que contiene los desafíos.
+     */
     private void editarDesafio(JTable tablaDesafios) {
         int row = tablaDesafios.getSelectedRow();
         if (row == -1) {
@@ -340,6 +402,11 @@ public class GraficosAdmin extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Elimina un desafío seleccionado.
+     *
+     * @param tablaDesafios La tabla que contiene los desafíos.
+     */
     private void eliminarDesafio(JTable tablaDesafios) {
         int row = tablaDesafios.getSelectedRow();
         if (row == -1) {
@@ -367,6 +434,11 @@ public class GraficosAdmin extends JFrame {
         }
     }
 
+    /**
+     * Inicializa el panel de logros.
+     *
+     * @return El panel de logros.
+     */
     private JPanel inicializarPanelLogros() {
         JPanel panelLogros = new JPanel(new BorderLayout(10, 10));
         panelLogros.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -400,6 +472,9 @@ public class GraficosAdmin extends JFrame {
         return panelLogros;
     }
 
+    /**
+     * Abre un diálogo para agregar un nuevo logro.
+     */
     private void agregarLogro() {
         JDialog dialog = new JDialog(this, "Agregar Logro", true);
         dialog.setSize(400, 300);
@@ -468,6 +543,11 @@ public class GraficosAdmin extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Abre un diálogo para editar un logro seleccionado.
+     *
+     * @param tablaLogros La tabla que contiene los logros.
+     */
     private void editarLogro(JTable tablaLogros) {
         int row = tablaLogros.getSelectedRow();
         if (row == -1) {
@@ -546,6 +626,11 @@ public class GraficosAdmin extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Elimina un logro seleccionado.
+     *
+     * @param tablaLogros La tabla que contiene los logros.
+     */
     private void eliminarLogro(JTable tablaLogros) {
         int row = tablaLogros.getSelectedRow();
         if (row == -1) {
@@ -572,6 +657,11 @@ public class GraficosAdmin extends JFrame {
         }
     }
 
+    /**
+     * Inicializa el panel de competencias.
+     *
+     * @return El panel de competencias.
+     */
     private JPanel inicializarPanelCompetencias() {
         JPanel panelCompetencias = new JPanel(new BorderLayout(10, 10));
 
@@ -620,6 +710,11 @@ public class GraficosAdmin extends JFrame {
         return panelCompetencias;
     }
 
+    /**
+     * Carga los desafíos desde la base de datos y los muestra en la tabla.
+     *
+     * @param modeloTabla El modelo de la tabla donde se mostrarán los desafíos.
+     */
     private void cargarDesafiosDesdeBaseDeDatos(DefaultTableModel modeloTabla) {
         modeloTabla.setRowCount(0); // Limpia la tabla
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
@@ -639,6 +734,9 @@ public class GraficosAdmin extends JFrame {
         }
     }
 
+    /**
+     * Carga las competencias desde la base de datos y las muestra en la tabla.
+     */
     private void cargarCompetenciasDesdeBaseDeDatos() {
         modeloTablaCompetencias.setRowCount(0); // Limpiar la tabla antes de llenarla
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
@@ -658,6 +756,13 @@ public class GraficosAdmin extends JFrame {
         }
     }
 
+    /**
+     * Crea un botón con el texto y la acción especificados.
+     *
+     * @param texto  El texto del botón.
+     * @param accion La acción a realizar cuando se presiona el botón.
+     * @return El botón creado.
+     */
     private JButton crearBoton(String texto, ActionListener accion) {
         JButton boton = new JButton(texto);
         boton.setBackground(new Color(70, 130, 180));
@@ -669,12 +774,20 @@ public class GraficosAdmin extends JFrame {
         return boton;
     }
 
+    /**
+     * Aplica estilo a un campo de texto.
+     *
+     * @param campo El campo de texto a estilizar.
+     */
     private void estilizarCampoTexto(JTextField campo) {
         campo.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         campo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     }
 
+    /**
+     * Abre un diálogo para agregar una nueva competencia.
+     */
     private void agregarCompetencia() {
         JDialog dialog = new JDialog(this, "Agregar Competencia", true);
         dialog.setSize(400, 400);
@@ -790,6 +903,11 @@ public class GraficosAdmin extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Abre un diálogo para editar una competencia seleccionada.
+     *
+     * @param tablaCompetencias La tabla que contiene las competencias.
+     */
     private void editarCompetencia(JTable tablaCompetencias) {
         int filaSeleccionada = tablaCompetencias.getSelectedRow();
         if (filaSeleccionada == -1) {
@@ -903,6 +1021,13 @@ public class GraficosAdmin extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Muestra un mensaje en un cuadro de diálogo.
+     *
+     * @param mensaje     El mensaje a mostrar.
+     * @param titulo      El título del cuadro de diálogo.
+     * @param tipoMensaje El tipo de mensaje (información, advertencia, error, etc.).
+     */
     private void mostrarMensaje(String mensaje, String titulo, int tipoMensaje) {
         UIManager.put("OptionPane.messageFont", new Font("Segoe UI", Font.PLAIN, 14));
         UIManager.put("OptionPane.buttonFont", new Font("Segoe UI", Font.BOLD, 14));
@@ -911,6 +1036,11 @@ public class GraficosAdmin extends JFrame {
         JOptionPane.showMessageDialog(this, mensaje, titulo, tipoMensaje);
     }
 
+    /**
+     * Elimina una competencia seleccionada.
+     *
+     * @param tabla La tabla que contiene las competencias.
+     */
     private void eliminarCompetencia(JTable tabla) {
         int row = tabla.getSelectedRow();
         if (row == -1) {
@@ -938,5 +1068,4 @@ public class GraficosAdmin extends JFrame {
             }
         }
     }
-
 }

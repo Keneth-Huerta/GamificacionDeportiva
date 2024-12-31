@@ -13,6 +13,28 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+
+/**
+ * FormularioEditarPerfil es una clase que extiende JDialog y proporciona una interfaz gráfica
+ * para que los usuarios editen su perfil, incluyendo su nombre, contraseña y foto de perfil.
+ * <p>
+ * La clase incluye varios componentes de la interfaz de usuario como JTextField, JPasswordField,
+ * JButton y JLabel, y maneja eventos para la selección de una nueva foto de perfil y la
+ * actualización de los datos del usuario en la base de datos.
+ * </p>
+ * <p>El formulario permite:</p>
+ * <ul>
+ *   <li>Editar el nombre y la contraseña del usuario.</li>
+ *   <li>Seleccionar y actualizar una foto de perfil.</li>
+ *   <li>Guardar los cambios realizados y almacenarlos en la base de datos.</li>
+ * </ul>
+ *
+ * <p>Constructor de la clase:</p>
+ *
+ * @param owner   El frame propietario del diálogo.
+ * @param usuario El usuario actual cuyos datos se van a editar.
+ * @param sistema El sistema de gamificación.
+ */
 public class FormularioEditarPerfil extends JDialog {
     private static final long serialVersionUID = 1L;
 
@@ -24,6 +46,13 @@ public class FormularioEditarPerfil extends JDialog {
     private Usuario usuarioActual;
     private SistemaGamificacion sistema;
 
+    /**
+     * Constructor del formulario para editar el perfil.
+     *
+     * @param owner   El frame propietario del diálogo.
+     * @param usuario El usuario actual cuyos datos se van a editar.
+     * @param sistema El sistema de gamificación.
+     */
     public FormularioEditarPerfil(Frame owner, Usuario usuario, SistemaGamificacion sistema) {
         super(owner, "Editar Perfil", true);
         this.usuarioActual = usuario;
@@ -48,9 +77,7 @@ public class FormularioEditarPerfil extends JDialog {
         lblFotoPerfil.setHorizontalAlignment(SwingConstants.CENTER);
         lblFotoPerfil.setPreferredSize(new Dimension(150, 150)); // Tamaño fijo para la etiqueta
         lblFotoPerfil.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblFotoPerfil.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1)); // Opcional: borde
-        // alrededor de la
-        // imagen
+        lblFotoPerfil.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1)); // Opcional: borde alrededor de la imagen
 
         ImageIcon icono = sistema.obtenerFotoDesdeBaseDeDatos(usuario.getId());
         if (icono != null) {
@@ -67,9 +94,8 @@ public class FormularioEditarPerfil extends JDialog {
         // Campos de Edición
         JPanel panelCampos = new JPanel(new GridLayout(2, 2, 10, 10));
         panelCampos.setBackground(Color.WHITE);
-        panelCampos
-                .setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)),
-                        BorderFactory.createEmptyBorder(15, 15, 15, 15)));
+        panelCampos.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(15, 15, 15, 15)));
 
         txtNombre = new JTextField(usuario.getNombre());
         txtContrasena = new JPasswordField();
@@ -97,6 +123,13 @@ public class FormularioEditarPerfil extends JDialog {
         setLocationRelativeTo(owner);
     }
 
+    /**
+     * Crea un botón con el texto y la acción especificados.
+     *
+     * @param texto  El texto del botón.
+     * @param accion La acción a realizar cuando se presiona el botón.
+     * @return El botón creado.
+     */
     private JButton crearBoton(String texto, ActionListener accion) {
         JButton boton = new JButton(texto);
         boton.setBackground(new Color(70, 130, 180));
@@ -109,12 +142,20 @@ public class FormularioEditarPerfil extends JDialog {
         return boton;
     }
 
+    /**
+     * Aplica estilo a un campo de texto.
+     *
+     * @param campo El campo de texto a estilizar.
+     */
     private void estilizarCampoTexto(JTextField campo) {
         campo.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         campo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     }
 
+    /**
+     * Permite al usuario seleccionar una foto de perfil desde su sistema de archivos.
+     */
     private void seleccionarFoto() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(this);
@@ -131,6 +172,14 @@ public class FormularioEditarPerfil extends JDialog {
         }
     }
 
+    /**
+     * Escala una imagen a las dimensiones especificadas.
+     *
+     * @param originalImage La imagen original.
+     * @param width         El ancho deseado.
+     * @param height        La altura deseada.
+     * @return La imagen escalada.
+     */
     private BufferedImage escalarImagen(BufferedImage originalImage, int width, int height) {
         Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage scaledBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -142,12 +191,22 @@ public class FormularioEditarPerfil extends JDialog {
         return scaledBufferedImage;
     }
 
+    /**
+     * Convierte una imagen en un arreglo de bytes.
+     *
+     * @param imagen La imagen a convertir.
+     * @return El arreglo de bytes que representa la imagen.
+     * @throws IOException Si ocurre un error durante la conversión.
+     */
     private byte[] convertirImagenABytes(BufferedImage imagen) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(imagen, "png", baos);
         return baos.toByteArray();
     }
 
+    /**
+     * Guarda los cambios realizados en el perfil del usuario.
+     */
     private void guardarCambios() {
         String nombre = txtNombre.getText().trim();
         String contrasena = new String(txtContrasena.getPassword()).trim();
@@ -193,6 +252,11 @@ public class FormularioEditarPerfil extends JDialog {
         }
     }
 
+    /**
+     * Carga una imagen predeterminada para el perfil.
+     *
+     * @return Un ImageIcon con la imagen predeterminada.
+     */
     private ImageIcon cargarImagenPredeterminada() {
         try {
             BufferedImage defaultImage = ImageIO.read(getClass().getResource("resources/default-profile.png"));
@@ -207,6 +271,13 @@ public class FormularioEditarPerfil extends JDialog {
         }
     }
 
+    /**
+     * Convierte una imagen en un ImageIcon circular.
+     *
+     * @param originalImage La imagen original.
+     * @param diameter      El diámetro del círculo.
+     * @return Un ImageIcon con la imagen circular.
+     */
     public ImageIcon hacerImagenCircular(BufferedImage originalImage, int diameter) {
         BufferedImage circularImage = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = circularImage.createGraphics();
@@ -218,6 +289,12 @@ public class FormularioEditarPerfil extends JDialog {
         return new ImageIcon(circularImage);
     }
 
+    /**
+     * Convierte un ImageIcon en un ImageIcon circular.
+     *
+     * @param icono El ImageIcon original.
+     * @return Un ImageIcon con la imagen circular.
+     */
     private ImageIcon hacerImagenCircular(ImageIcon icono) {
         BufferedImage originalImage = new BufferedImage(icono.getIconWidth(), icono.getIconHeight(),
                 BufferedImage.TYPE_INT_ARGB);

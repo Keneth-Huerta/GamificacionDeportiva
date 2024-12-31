@@ -16,6 +16,33 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
+/**
+ * La clase Graficos extiende JFrame y representa la interfaz gráfica de la aplicación de gamificación deportiva.
+ * Proporciona diferentes paneles para mostrar el perfil del usuario, actividades, logros, desafíos, competencias y ranking.
+ *
+ * <p>Esta clase incluye métodos para:</p>
+ * <ul>
+ *   <li>Mostrar y gestionar el perfil del usuario</li>
+ *   <li>Registrar y mostrar actividades del usuario</li>
+ *   <li>Mostrar logros, desafíos y competiciones activas</li>
+ *   <li>Mostrar el ranking de las competencias</li>
+ * </ul>
+ *
+ * <p>También interactúa con la base de datos para cargar los logros, desafíos, competencias y actividades del usuario.</p>
+ *
+ * <p>Ejemplo de uso:</p>
+ * <pre>
+ * {@code
+ * Graficos graficos = new Graficos(sistema, usuarioActual);
+ * graficos.setVisible(true);
+ * }
+ * </pre>
+ *
+ * <p>Constructor de la clase:</p>
+ *
+ * @param sistema       El sistema de gamificación.
+ * @param usuarioActual El usuario actual.
+ */
 public class Graficos extends JFrame {
     private static final long serialVersionUID = 2208912880386379928L;
     private SistemaGamificacion sistema;
@@ -32,12 +59,17 @@ public class Graficos extends JFrame {
     private JTable tablaCompetencias; // Declarar como variable de instancia
     private JLabel lblFotoPerfil;
 
+    /**
+     * Constructor de la clase Graficos.
+     *
+     * @param sistema       Sistema de gamificación.
+     * @param usuarioActual Usuario actual.
+     */
     public Graficos(SistemaGamificacion sistema, Usuario usuarioActual) {
         this.sistema = sistema;
         this.usuarioActual = usuarioActual;
 
         configurarVentana();
-
         inicializarComponentes();
 
         try {
@@ -47,6 +79,9 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Actualiza la tabla de desafíos con los datos de la base de datos.
+     */
     private void actualizarDesafiosTabla() {
         modeloTablaDesafios.setRowCount(0); // Limpiar la tabla actual
 
@@ -72,6 +107,11 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Carga el ranking de una competencia específica.
+     *
+     * @param competenciaId Identificador de la competencia.
+     */
     private void cargarRanking(String competenciaId) {
         modeloTablaRanking.setRowCount(0); // Limpiar la tabla
 
@@ -86,6 +126,12 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Obtiene el estado de un logro específico.
+     *
+     * @param logroId Identificador del logro.
+     * @return Estado del logro.
+     */
     private String obtenerEstadoLogro(String logroId) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -105,10 +151,16 @@ public class Graficos extends JFrame {
         return "Pendiente"; // Estado predeterminado si no está completado
     }
 
+    /**
+     * Calcula el progreso de un logro específico.
+     *
+     * @param logroId  Identificador del logro.
+     * @param objetivo Objetivo del logro.
+     * @return Progreso del logro en porcentaje.
+     */
     private int calcularProgresoLogro(String logroId, int objetivo) {
         if (objetivo == 0) {
-            return 100; // Si el logro no tiene un objetivo definido, se considera completado
-            // automáticamente
+            return 100; // Si el logro no tiene un objetivo definido, se considera completado automáticamente
         }
 
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
@@ -141,6 +193,9 @@ public class Graficos extends JFrame {
         return 0; // En caso de error o sin datos, retorna 0% de progreso
     }
 
+    /**
+     * Configura la ventana principal de la aplicación.
+     */
     private void configurarVentana() {
         setTitle("Gamificación Deportiva");
         setSize(1000, 700); // Ventana más grande para mejor visualización
@@ -150,6 +205,9 @@ public class Graficos extends JFrame {
         getContentPane().setBackground(new Color(245, 245, 250)); // Fondo suave
     }
 
+    /**
+     * Inicializa los componentes de la interfaz gráfica.
+     */
     private void inicializarComponentes() {
         tabbedPane = new JTabbedPane();
         estilizarTabbedPane(tabbedPane);
@@ -171,6 +229,11 @@ public class Graficos extends JFrame {
         add(tabbedPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Estiliza el componente JTabbedPane.
+     *
+     * @param tabbedPane Componente JTabbedPane a estilizar.
+     */
     private void estilizarTabbedPane(JTabbedPane tabbedPane) {
         tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 14));
         tabbedPane.setForeground(new Color(50, 50, 50)); // Color del texto de las pestañas
@@ -184,6 +247,9 @@ public class Graficos extends JFrame {
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
+    /**
+     * Cierra la sesión del usuario actual.
+     */
     private void cerrarSesion() {
         File sesionFile = new File("sesion.txt");
         if (sesionFile.exists()) {
@@ -194,6 +260,9 @@ public class Graficos extends JFrame {
         this.dispose();
     }
 
+    /**
+     * Inicializa el panel de desafíos.
+     */
     private void inicializarPanelDesafios() {
         panelDesafios = new JPanel(new BorderLayout(10, 10));
         panelDesafios.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -226,6 +295,9 @@ public class Graficos extends JFrame {
         panelDesafios.add(scrollTabla, BorderLayout.CENTER);
     }
 
+    /**
+     * Carga los desafíos desde la base de datos.
+     */
     private void cargarDesafiosDesdeBaseDeDatos() {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -246,6 +318,11 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Carga la imagen predeterminada de perfil.
+     *
+     * @return ImageIcon de la imagen predeterminada.
+     */
     private ImageIcon cargarImagenPredeterminada() {
         try {
             BufferedImage defaultImage = ImageIO.read(getClass().getResource("resources/default-profile.png"));
@@ -260,6 +337,14 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Escala una imagen a las dimensiones especificadas.
+     *
+     * @param originalImage Imagen original.
+     * @param width         Ancho deseado.
+     * @param height        Alto deseado.
+     * @return BufferedImage escalada.
+     */
     private BufferedImage escalarImagen(BufferedImage originalImage, int width, int height) {
         Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage scaledBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -271,6 +356,13 @@ public class Graficos extends JFrame {
         return scaledBufferedImage;
     }
 
+    /**
+     * Convierte una imagen en una imagen circular.
+     *
+     * @param originalImage Imagen original.
+     * @param diameter      Diámetro deseado.
+     * @return ImageIcon de la imagen circular.
+     */
     public ImageIcon hacerImagenCircular(BufferedImage originalImage, int diameter) {
         BufferedImage circularImage = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = circularImage.createGraphics();
@@ -282,6 +374,9 @@ public class Graficos extends JFrame {
         return new ImageIcon(circularImage);
     }
 
+    /**
+     * Inicializa el panel de perfil del usuario.
+     */
     private void inicializarPanelPerfil() {
         panelPerfil = new JPanel();
         panelPerfil.setLayout(new BoxLayout(panelPerfil, BoxLayout.Y_AXIS));
@@ -364,11 +459,23 @@ public class Graficos extends JFrame {
         panelPerfil.add(panelBotones);
     }
 
+    /**
+     * Estiliza una etiqueta de perfil.
+     *
+     * @param etiqueta Etiqueta a estilizar.
+     */
     private void estilizarEtiquetaPerfil(JLabel etiqueta) {
         etiqueta.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         etiqueta.setForeground(new Color(50, 50, 50)); // Gris oscuro
     }
 
+    /**
+     * Crea un botón con el texto y la acción especificados.
+     *
+     * @param texto  Texto del botón.
+     * @param accion Acción a realizar al presionar el botón.
+     * @return JButton creado.
+     */
     private JButton crearBoton(String texto, ActionListener accion) {
         JButton boton = new JButton(texto);
         boton.setBackground(new Color(70, 130, 180));
@@ -381,6 +488,13 @@ public class Graficos extends JFrame {
         return boton;
     }
 
+    /**
+     * Convierte una imagen en un icono circular.
+     *
+     * @param imagenBytes Los bytes de la imagen a convertir.
+     * @param diameter    El diámetro del icono circular.
+     * @return Un ImageIcon circular o null si ocurre un error.
+     */
     private ImageIcon hacerImagenCircular(byte[] imagenBytes, int diameter) {
         try {
             BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(imagenBytes));
@@ -398,6 +512,9 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Abre el formulario de edición de perfil y actualiza los datos del usuario.
+     */
     private void editarPerfil() {
         FormularioEditarPerfil formulario = new FormularioEditarPerfil(this, usuarioActual, sistema);
         formulario.setVisible(true); // Abre el formulario de edición
@@ -421,6 +538,11 @@ public class Graficos extends JFrame {
         actualizarFotoPerfil(); // Actualizar visualmente la foto de perfil
     }
 
+    /**
+     * Actualiza la barra de progreso de logros del usuario.
+     *
+     * @param barraProgreso La barra de progreso a actualizar.
+     */
     private void actualizarBarraProgresoLogros(JProgressBar barraProgreso) {
         int totalLogros = sistema.getLogrosDisponibles().size();
         long logrosCompletados = sistema.getLogrosDisponibles().stream().filter(Logro::isCompletado).count();
@@ -435,6 +557,9 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Actualiza la foto de perfil del usuario en la interfaz.
+     */
     private void actualizarFotoPerfil() {
         try {
             // Obtener la imagen desde la base de datos
@@ -453,6 +578,13 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Convierte un ImageIcon en un icono circular.
+     *
+     * @param icono    El ImageIcon a convertir.
+     * @param diameter El diámetro del icono circular.
+     * @return Un ImageIcon circular.
+     */
     private ImageIcon hacerImagenCircular(ImageIcon icono, int diameter) {
         BufferedImage originalImage = new BufferedImage(icono.getIconWidth(), icono.getIconHeight(),
                 BufferedImage.TYPE_INT_ARGB);
@@ -469,6 +601,12 @@ public class Graficos extends JFrame {
         return new ImageIcon(circularImage);
     }
 
+    /**
+     * Obtiene la foto de perfil de un usuario desde la base de datos.
+     *
+     * @param usuarioId El ID del usuario.
+     * @return Un ImageIcon con la foto de perfil o null si no se encuentra.
+     */
     public ImageIcon obtenerFotoDesdeBaseDeDatos(String usuarioId) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -493,6 +631,11 @@ public class Graficos extends JFrame {
         return null; // Si no hay imagen o ocurre un error
     }
 
+    /**
+     * Habilita los tooltips en una tabla.
+     *
+     * @param tabla La tabla en la que se habilitarán los tooltips.
+     */
     private void habilitarToolTipsTabla(JTable tabla) {
         tabla.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             @Override
@@ -512,6 +655,9 @@ public class Graficos extends JFrame {
         });
     }
 
+    /**
+     * Inicializa el panel de ranking.
+     */
     private void inicializarPanelRanking() {
         panelRanking = new JPanel(new BorderLayout(10, 10));
         panelRanking.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -559,6 +705,9 @@ public class Graficos extends JFrame {
         panelRanking.add(btnActualizarRanking, BorderLayout.SOUTH);
     }
 
+    /**
+     * Inicializa el panel de competencias.
+     */
     private void inicializarPanelCompetencias() {
         panelCompetencias = new JPanel(new BorderLayout(10, 10));
         panelCompetencias.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -673,6 +822,9 @@ public class Graficos extends JFrame {
         panelCompetencias.add(panelBotones, BorderLayout.SOUTH);
     }
 
+    /**
+     * Carga las competencias desde la base de datos y las muestra en la tabla.
+     */
     private void cargarCompetenciasDesdeBaseDeDatos() {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -702,7 +854,12 @@ public class Graficos extends JFrame {
         }
     }
 
-    // Método para transformar el tipo de deporte
+    /**
+     * Transforma el tipo de deporte a un formato amigable.
+     *
+     * @param tipoDeporte El tipo de deporte en formato original.
+     * @return El tipo de deporte en formato amigable.
+     */
     private String transformarTipoDeporte(String tipoDeporte) {
         switch (tipoDeporte) {
             case "CORRER":
@@ -724,7 +881,12 @@ public class Graficos extends JFrame {
         }
     }
 
-    // Método para transformar el estado
+    /**
+     * Transforma el estado de la competencia a un formato amigable.
+     *
+     * @param estado El estado de la competencia en formato original.
+     * @return El estado de la competencia en formato amigable.
+     */
     private String transformarEstado(String estado) {
         if (estado == null) {
             return "No registrado"; // Valor por defecto para estados nulos
@@ -742,6 +904,9 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Inicializa el panel de logros del usuario.
+     */
     private void inicializarPanelLogros() {
         panelLogros = new JPanel(new BorderLayout(10, 10));
         panelLogros.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -775,21 +940,21 @@ public class Graficos extends JFrame {
         habilitarToolTipsTabla(tablaLogros);
         tablaLogros.setRowHeight(30);
 
-       /* // Configuración de renderizador para la columna de progreso
-        tablaLogros.getColumnModel().getColumn(4).setCellRenderer(new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
-                if (value instanceof JProgressBar) {
-                    JProgressBar progressBar = (JProgressBar) value;
-                    progressBar.setStringPainted(true); // Mostrar el texto del progreso
-                    progressBar.setBackground(new Color(230, 230, 230));
-                    progressBar.setForeground(new Color(70, 130, 180));
-                    return progressBar;
-                }
-                return null;
+    /* // Configuración de renderizador para la columna de progreso
+    tablaLogros.getColumnModel().getColumn(4).setCellRenderer(new TableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            if (value instanceof JProgressBar) {
+                JProgressBar progressBar = (JProgressBar) value;
+                progressBar.setStringPainted(true); // Mostrar el texto del progreso
+                progressBar.setBackground(new Color(230, 230, 230));
+                progressBar.setForeground(new Color(70, 130, 180));
+                return progressBar;
             }
-        });*/
+            return null;
+        }
+    });*/
 
         tablaLogros.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         tablaLogros.getTableHeader().setBackground(new Color(70, 130, 180));
@@ -832,6 +997,9 @@ public class Graficos extends JFrame {
         panelLogros.add(btnVerificarLogros, BorderLayout.SOUTH);
     }
 
+    /**
+     * Actualiza la tabla de logros con los datos de la base de datos.
+     */
     private void actualizarLogrosTabla() {
         modeloTablaLogros.setRowCount(0); // Limpiar la tabla antes de llenarla
 
@@ -864,6 +1032,9 @@ public class Graficos extends JFrame {
         }
     }
 
+    /**
+     * Inicializa el panel de actividades del usuario.
+     */
     private void inicializarPanelActividades() {
         panelActividades = new JPanel(new BorderLayout(15, 15));
         panelActividades.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -1014,6 +1185,13 @@ public class Graficos extends JFrame {
         panelActividades.add(btnRegistrar, BorderLayout.SOUTH);
     }
 
+    /**
+     * Obtiene el estado de una competencia específica para un usuario.
+     *
+     * @param competenciaId Identificador de la competencia.
+     * @param usuarioId     Identificador del usuario.
+     * @return Estado de la competencia.
+     */
     public String obtenerEstadoCompetencia(String competenciaId, String usuarioId) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -1033,6 +1211,11 @@ public class Graficos extends JFrame {
         return null; // Retorna null si no encuentra el estado
     }
 
+    /**
+     * Carga las actividades del usuario desde la base de datos y las muestra en la tabla.
+     *
+     * @param modeloTabla Modelo de la tabla donde se mostrarán las actividades.
+     */
     private void cargarActividadesDesdeBaseDeDatos(DefaultTableModel modeloTabla) {
         try (Connection conn = DriverManager.getConnection(Configuracion.DB_URL, Configuracion.DB_USER,
                 Configuracion.DB_PASSWORD)) {
@@ -1051,5 +1234,4 @@ public class Graficos extends JFrame {
             ex.printStackTrace();
         }
     }
-
 }
