@@ -1,0 +1,57 @@
+# ============================================
+# ARCHIVO DE CONFIGURACIÓN DE EJEMPLO
+# ============================================
+# 
+# INSTRUCCIONES:
+# 1. Copia este archivo como "config.properties"
+# 2. Actualiza los valores con tus credenciales
+# 3. NO subas el archivo config.properties a Git (está en .gitignore)
+#
+# ============================================
+
+# Configuración de Base de Datos
+# Actualiza estos valores con tu configuración local
+
+# URL de conexión a MySQL
+# Formato: jdbc:mysql://[host]:[puerto]/[nombre_base_datos]
+db.url=jdbc:mysql://localhost:3306/gamificacion_deportiva
+
+# Usuario de la base de datos
+# Recomendado: crear un usuario específico para la aplicación
+db.user=gamificacion_user
+
+# Contraseña del usuario
+# IMPORTANTE: Usa una contraseña segura
+db.password=TU_CONTRASEÑA_AQUI
+
+# ============================================
+# CONFIGURACIÓN ADICIONAL (OPCIONAL)
+# ============================================
+
+# Pool de conexiones (si se implementa en el futuro)
+# db.pool.minSize=5
+# db.pool.maxSize=20
+# db.pool.timeout=30000
+
+# Configuración de la aplicación
+# app.name=Sistema de Gamificación Deportiva
+# app.version=1.0.0
+
+# Configuración de logs (si se implementa en el futuro)
+# log.level=INFO
+# log.file=logs/gamificacion.log
+
+# Configuración de sesión
+# session.timeout=3600
+
+# ============================================
+# NOTAS DE SEGURIDAD
+# ============================================
+# 
+# - NUNCA compartas este archivo con credenciales reales
+# - Usa contraseñas fuertes y únicas
+# - Considera usar variables de entorno en producción
+# - Cambia las credenciales por defecto de MySQL
+# - Limita los privilegios del usuario de la base de datos
+# 
+# ============================================

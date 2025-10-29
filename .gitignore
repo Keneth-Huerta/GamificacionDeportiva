@@ -2,6 +2,8 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+.idea/
+*.iml
 
 ### Eclipse ###
 .apt_generated
@@ -24,6 +26,75 @@ bin/
 
 ### VS Code ###
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 ### Mac OS ###
 .DS_Store
+*.DS_Store
+
+### Windows ###
+Thumbs.db
+desktop.ini
+
+### Application Specific ###
+# Archivo de sesión temporal
+sesion.txt
+*.session
+
+# Variables de entorno con credenciales
+.env
+.env.local
+.env.*.local
+
+# Configuración con credenciales (si se externaliza)
+Configuracion.properties
+config.properties
+database.properties
+application.properties
+application-*.properties
+
+# Backups de archivos
+*.bak
+*.backup
+*.old
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Archivos temporales
+*.tmp
+*.temp
+~$*
+*.swp
+*.swo
+*~
+
+# Archivos de base de datos locales
+*.db
+*.sqlite
+*.sqlite3
+
+# Credenciales y secretos
+secrets/
+credentials/
+*.key
+*.pem
+*.p12
+*.jks
+keystore
+
+### Compilados ###
+*.class
+*.jar
+!jcalendar-1.4.jar
+!mysql-connector-j-9.1.0.jar
+
+### Documentación generada ###
+# Descomentar si se regenera la documentación
+# Documentación privada/
+# Documentación pública/
