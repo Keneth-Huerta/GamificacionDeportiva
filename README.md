@@ -9,7 +9,6 @@ Sistema de gamificación diseñado para motivar y rastrear actividades deportiva
 ## Tabla de Contenidos
 
 - [Características](#características)
-- [Capturas de Pantalla](#capturas-de-pantalla)
 - [Requisitos Previos](#requisitos-previos)
 - [Instalación y Configuración](#instalación-y-configuración)
 - [Ejecución del Proyecto](#ejecución-del-proyecto)
@@ -49,10 +48,6 @@ Sistema de gamificación diseñado para motivar y rastrear actividades deportiva
 - **Competencias Grupales**: Participa en competencias con otros usuarios
 - **Tabla de Clasificación**: Ve cómo te comparas con otros deportistas
 - **Panel de Administración**: Herramientas especiales para administradores
-
-## Capturas de Pantalla
-
-**Nota**: Agrega capturas de pantalla de tu aplicación en la carpeta `screenshots/` y actualiza esta sección.
 
 ## Requisitos Previos
 
@@ -115,39 +110,9 @@ mysql -u gamificacion_user -p gamificacion_deportiva < database/schema.sql
 
 ### Paso 3: Configurar las Credenciales de la Aplicación
 
-**IMPORTANTE**: Debes configurar las credenciales de acceso a la base de datos antes de ejecutar la aplicación.
+El proyecto utiliza **variables de entorno** para gestionar las credenciales de la base de datos de forma segura.
 
-Tienes dos opciones:
-
-#### Opción A: Modificar el archivo Configuracion.java (Para desarrollo local)
-
-Edita el archivo `src/gamificaciondeportiva/Configuracion.java` y actualiza las siguientes líneas:
-
-```java
-public static final String DB_URL = "jdbc:mysql://localhost:3306/gamificacion_deportiva";
-public static final String DB_USER = "gamificacion_user";
-public static final String DB_PASSWORD = "tu_contraseña_segura";
-```
-
-**ADVERTENCIA**: No subas este archivo con tus credenciales reales a un repositorio público.
-
-#### Opción B: Usar Variables de Entorno (Recomendado para producción)
-
-1. Modifica `src/gamificaciondeportiva/Configuracion.java` para leer variables de entorno:
-
-```java
-public static final String DB_URL = System.getenv("GAMIFICACION_DB_URL") != null 
-    ? System.getenv("GAMIFICACION_DB_URL")
-    : "jdbc:mysql://localhost:3306/gamificacion_deportiva";
-
-public static final String DB_USER = System.getenv("GAMIFICACION_DB_USER") != null
-    ? System.getenv("GAMIFICACION_DB_USER")
-    : "gamificacion_user";
-
-public static final String DB_PASSWORD = System.getenv("GAMIFICACION_DB_PASSWORD");
-```
-
-2. Configura las variables de entorno en tu sistema:
+Configura las siguientes variables de entorno antes de ejecutar la aplicación:
 
 **Linux/macOS**:
 ```bash
@@ -169,6 +134,8 @@ $env:GAMIFICACION_DB_URL="jdbc:mysql://localhost:3306/gamificacion_deportiva"
 $env:GAMIFICACION_DB_USER="gamificacion_user"
 $env:GAMIFICACION_DB_PASSWORD="tu_contraseña_segura"
 ```
+
+Si las variables no están configuradas, el sistema usará valores por defecto para desarrollo local.
 
 ## Ejecución del Proyecto
 
@@ -581,7 +548,7 @@ Se recomienda crear un script SQL completo para inicializar la base de datos. Pu
 
 ## Licencia
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la Licencia GPL-3.0 - ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## Autor
 
